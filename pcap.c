@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <sys/ioctl.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
@@ -74,12 +75,25 @@ int main(int argc, char *argv[], char *envp[])
   int soc, size;
   u_char buf[65535];
 
-  if (argc <= 1) {
+  int opt;
+  int filter_size = 0;
+
+  while((opt = getopt(argc, argv, "s:")) != -1) {
+    switch(opt) {
+    case 's':
+      filter_size = atoi(optarg);
+      break;
+    }
+  }
+  argc = argc - optind;
+  argv = argv + optind;
+
+  if (argc <= 0) {
     fprintf(stderr, "pcap device-name\n");
     return(1);
   }
 
-  if ((soc = InitRawSocket(argv[1], 0, 0)) == -1) {
+  if ((soc = InitRawSocket(argv[0], 0, 0)) == -1) {
     fprintf(stderr, "InitRawSocket:error:%s\n", argv[1]);
     return(-1);
   }
@@ -89,6 +103,9 @@ int main(int argc, char *argv[], char *envp[])
       perror("read");
     }
     else {
+      if (size <= filter_size) {
+        continue;
+      }
       AnalyzePacket(buf, size);
     }
   }
