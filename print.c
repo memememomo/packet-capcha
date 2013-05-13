@@ -205,9 +205,9 @@ int PrintIpHeader(struct iphdr *iphdr, u_char *option, int optionLen, FILE *fp)
   fprintf(fp, "ip------------------------------\n");
   fprintf(fp, "version=%u,", iphdr->version);
   fprintf(fp, "ihl=%u,", iphdr->ihl);
-  fprintf(fp, "tos=%x", iphdr->tos);
+  fprintf(fp, "tos=%x,", iphdr->tos);
   fprintf(fp, "tot_len=%u,", ntohs(iphdr->tot_len));
-  fprintf(fp, "id=%u\n,", ntohs(iphdr->id));
+  fprintf(fp, "id=%u\n", ntohs(iphdr->id));
   fprintf(fp, "frag_off=%x,%u,", (ntohs(iphdr->frag_off)>>13)&0x07, ntohs(iphdr->frag_off)&0x1FFF);
   fprintf(fp, "ttl=%u,", iphdr->ttl);
   fprintf(fp, "protocol=%u", iphdr->protocol);
